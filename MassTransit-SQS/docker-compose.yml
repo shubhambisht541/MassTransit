@@ -1,0 +1,27 @@
+﻿services:
+  masstransit-sqs:
+    image: masstransit-sqs
+    build:
+      context: .
+      dockerfile: MassTransit-SQS/Dockerfile
+    ports:
+      - "8080:8080"  
+    environment:
+       ASPNETCORE_ENVIRONMENT: Development
+       ConnectionStrings__SqlConnectionString: Server=SqlServer;Database=Movie;User=sa;Password=SqlServer123!;TrustServerCertificate=True;
+      #  ASPNETCORE_HTTP_PORTS : 80
+    depends_on:
+      - SqlServer
+
+  SqlServer:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "SqlServer123!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"  
+    volumes:
+      - sql_data:/var/opt/mssql
+        
+volumes:
+  sql_data:
