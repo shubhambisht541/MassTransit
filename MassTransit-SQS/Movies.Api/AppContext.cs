@@ -1,9 +1,8 @@
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Linq;
-using MassTransit_SQS.Entity;
+using Movies.Api.Entity;
 using Microsoft.EntityFrameworkCore;
+using Users.Api.Entities;
 
-namespace MassTransit_SQS;
+namespace Movies.Api;
 
 public class AppContext : DbContext
 {
@@ -13,4 +12,8 @@ public class AppContext : DbContext
     }
 
     public DbSet<Movie> Movie { get; set; }
+    
+    public DbSet<User> User { get; set; }
+    
+    public DbSet<UserMovieMapping> UserMovieMapping { get; set; }
 }

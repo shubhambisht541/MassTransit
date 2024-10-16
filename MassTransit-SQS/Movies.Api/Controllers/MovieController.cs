@@ -1,10 +1,11 @@
-using MassTransit_SQS.DTOs;
-using MassTransit_SQS.Entity;
-using MassTransit_SQS.Mapper;
+using MassTransit;
+using Message.Contracts;
+using Movies.Api.DTOs;
+using Movies.Api.Mapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace MassTransit_SQS.Controllers;
+namespace Movies.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -13,34 +14,57 @@ public class MovieController : ControllerBase
     private readonly ILogger<MovieController> _logger;
 
     private readonly AppContext _dbContext;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public MovieController(ILogger<MovieController> logger, AppContext dbContext)
+    public MovieController(ILogger<MovieController> logger, AppContext dbContext, IPublishEndpoint publishEndpoint)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _publishEndpoint = publishEndpoint;
     }
     
     [HttpGet(nameof(GetMovieDetails), Name = "GetMovieById")]
     public IActionResult GetMovieDetails([FromQuery] Guid id)
     {
-        var movieDetail =  _dbContext.Movie.Find(id);
+        var movieDetail =  _dbContext.Movie
+            .Include(m => m.UserMovieMappings)
+            .ThenInclude(u => u.User)
+            .FirstOrDefault(item => item.Id == id);
 
         if (movieDetail == null)
         {
             return NotFound(" Movie details does not exist");
         }
         
-        return Ok(MovieMapper.ToDto(movieDetail));
+        var userDetails = movieDetail.UserMovieMappings
+            .GroupBy(item => item.User.UserType)
+            .ToDictionary(
+                item => item.Key,
+                item => item.Select(u => u.User.Username).ToArray());
+        
+        return Ok(MovieMapper.ToDto(movieDetail, userDetails));
     }
 
     [HttpPost(nameof(AddMovieDetails), Name = "AddMovie")]
-    public IActionResult AddMovieDetails(MovieDto request)
+    public async Task<IActionResult> AddMovieDetails(MovieDto request)
     {
         try
         {
             var movieDetailEntity = MovieMapper.ToEntity(request);
             var movieDetail = _dbContext.Movie.Add(movieDetailEntity);
             _dbContext.SaveChanges();
+            
+            await _publishEndpoint.Publish(new UpdateUserMovieMapping
+            {
+                MovieId = movieDetailEntity.Id,
+                UserDetails =
+                [
+                    new UserDetails { UserNames = request.Actors, UserType = UserType.Actor },
+                    new UserDetails { UserNames = request.Directors, UserType = UserType.Director },
+                    new UserDetails { UserNames = request.JuniorArtist, UserType = UserType.JuniorArtist }
+                ]
+            });
+            
             return CreatedAtRoute("GetMovieById", new { id = movieDetailEntity.Id }, movieDetailEntity);
         }
         catch (Exception ex)

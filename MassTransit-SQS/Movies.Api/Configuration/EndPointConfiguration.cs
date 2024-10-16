@@ -1,4 +1,4 @@
-namespace MassTransit_SQS.Configuration;
+namespace Movies.Api.Configuration;
 
 public static class EndPointConfiguration
 {

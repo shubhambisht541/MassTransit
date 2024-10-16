@@ -1,10 +1,11 @@
-using MassTransit_SQS.Configuration;
-using MassTransit_SQS.Extension;
+using Movies.Api.Configuration;
+using Movies.Api.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
 EndPointConfiguration.Build(builder);
 DataProviderConfiguration.Build(builder);
+MessageBrokerConfiguration.Build(builder);
 
 var app = builder.Build();
 

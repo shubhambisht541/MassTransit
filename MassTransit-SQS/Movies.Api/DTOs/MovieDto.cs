@@ -1,4 +1,4 @@
-namespace MassTransit_SQS.DTOs;
+namespace Movies.Api.DTOs;
 
 public class MovieDto
 {

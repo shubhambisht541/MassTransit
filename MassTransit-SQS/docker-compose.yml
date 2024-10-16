@@ -1,9 +1,9 @@
 ﻿services:
-  masstransit-sqs:
-    image: masstransit-sqs
+  movies-api:
+    image: movies.api
     build:
       context: .
-      dockerfile: MassTransit-SQS/Dockerfile
+      dockerfile: Movies.Api/Dockerfile
     ports:
       - "8080:8080"  
     environment:

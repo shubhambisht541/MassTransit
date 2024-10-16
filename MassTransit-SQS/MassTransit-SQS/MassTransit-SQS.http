@@ -1,6 +1,0 @@
-@MassTransit_SQS_HostAddress = http://localhost:8080
-
-GET {{MassTransit_SQS_HostAddress}}/AddMovie/Ger
-Accept: application/json
-
-###

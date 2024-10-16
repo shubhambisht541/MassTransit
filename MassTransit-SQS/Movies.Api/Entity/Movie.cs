@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+using Users.Api.Entities;
 
-namespace MassTransit_SQS.Entity;
+namespace Movies.Api.Entity;
 
 public class Movie
 {
@@ -14,15 +13,15 @@ public class Movie
     
     public string Genre { get; set; } = string.Empty;
     
-    public string Directors { get; set; } = string.Empty;
-
-    public string Actors { get; set; } = string.Empty;
-
-    public string JuniorArtist { get; set; } = string.Empty;
-
     public DateTime ReleaseDate { get; set; }
 
     public decimal Rating { get; set; }
     
     public decimal MovieCollection { get; set; }
+    
+    #region Navigation Properties
+
+    public ICollection<UserMovieMapping> UserMovieMappings { get; set; } 
+
+    #endregion
 }

@@ -1,7 +1,10 @@
-using MassTransit_SQS.DTOs;
-using MassTransit_SQS.Entity;
+using Message.Contracts;
+using Movies.Api.DTOs;
+using Movies.Api.Entity;
+using Users.Api.Entities;
+using UserType = Movies.Api.Enums.UserType;
 
-namespace MassTransit_SQS.Mapper;
+namespace Movies.Api.Mapper;
 
 public static class MovieMapper
 {
@@ -12,9 +15,22 @@ public static class MovieMapper
             Id = movie.Id,
             Title = movie.Title,
             Genre = !string.IsNullOrWhiteSpace(movie.Genre) ? movie.Genre.Split(',') : [],
-            Directors = !string.IsNullOrWhiteSpace(movie.Directors) ? movie.Directors.Split(',') : [],
-            Actors = !string.IsNullOrWhiteSpace(movie.Actors) ? movie.Actors.Split(',') : [],
-            JuniorArtist = !string.IsNullOrWhiteSpace(movie.JuniorArtist) ? movie.JuniorArtist.Split(',') : [],
+            ReleaseDate = movie.ReleaseDate,
+            Rating = movie.Rating,
+            MovieCollection = movie.MovieCollection
+        };
+    }
+    
+    public static MovieDto ToDto(Movie movie, Dictionary<UserType,string[]>? userDetails)
+    {
+        return new MovieDto
+        {
+            Id = movie.Id,
+            Title = movie.Title,
+            Genre = !string.IsNullOrWhiteSpace(movie.Genre) ? movie.Genre.Split(',') : [],
+            Directors = userDetails!.TryGetValue(UserType.Director, out var directors) ? directors : [],
+            Actors = userDetails.TryGetValue(UserType.Actor, out var actors) ? actors : [],
+            JuniorArtist = userDetails.TryGetValue(UserType.JuniorArtist, out var juniorArtists) ? juniorArtists : [],
             ReleaseDate = movie.ReleaseDate,
             Rating = movie.Rating,
             MovieCollection = movie.MovieCollection
@@ -28,9 +44,6 @@ public static class MovieMapper
             Id = movieDto.Id,
             Title = movieDto.Title,
             Genre = string.Join(",", movieDto.Genre),
-            Directors = string.Join(",", movieDto.Directors),
-            Actors = string.Join(",", movieDto.Actors),
-            JuniorArtist = string.Join(",", movieDto.JuniorArtist),
             ReleaseDate = movieDto.ReleaseDate,
             Rating = movieDto.Rating,
             MovieCollection = movieDto.MovieCollection
@@ -41,9 +54,6 @@ public static class MovieMapper
     {
         existingMovie.Title = movieDto.Title;
         existingMovie.Genre = string.Join(",", movieDto.Genre);
-        existingMovie.Directors = string.Join(",", movieDto.Directors);
-        existingMovie.Actors = string.Join(",", movieDto.Actors);
-        existingMovie.JuniorArtist = string.Join(",", movieDto.JuniorArtist);
         existingMovie.ReleaseDate = movieDto.ReleaseDate;
         existingMovie.Rating = movieDto.Rating;
         existingMovie.MovieCollection = movieDto.MovieCollection;

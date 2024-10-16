@@ -1,6 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
-namespace MassTransit_SQS.Configuration;
+namespace Movies.Api.Configuration;
 public class DataProviderConfiguration
 { 
     public static void Build(WebApplicationBuilder builder)
