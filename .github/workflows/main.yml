@@ -7,6 +7,7 @@ on:
     branches: ["main"]
 
 env:
+  SOLUTION_FILE_PATH: "./MassTransit-SQS/MassTransit-Demo.sln"
   PUBLISH_APP_PATH: "../publish"
 
 jobs:
@@ -21,10 +22,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore
-      run: dotnet restore ../MassTransit-Demo.sln
+      run: dotnet restore '{{ SOLUTION_FILE_PATH }}'
 
     - name: Build
-      run: dotnet build ../MassTransit-Demo.sln --no-restore --configuration Release
+      run: dotnet build '{{ SOLUTION_FILE_PATH }}' --no-restore --configuration Release
 
     - name: Publish
-      run: dotnet publish ../MassTransit-Demo.sln  --configuration Releasse -o '{{ PUBLISH_APP_PATH }}'
+      run: dotnet publish '{{ SOLUTION_FILE_PATH }}'  --configuration Releasse -o '{{ PUBLISH_APP_PATH }}'
