@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 env:
-  SOLUTION_FILE_PATH: "./MassTransit-SQS/MassTransit-Demo.sln"
+  SOLUTION_FILE_PATH: "./MassTransit-SQS/MassTransit-SQS.sln"
   PUBLISH_APP_PATH: "../publish"
 
 jobs:
