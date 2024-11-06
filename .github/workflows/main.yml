@@ -1,0 +1,30 @@
+name: MassTransit-Demo-workflow
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  PUBLISH_APP_PATH: "../publish"
+
+jobs:
+  publish:
+   runs-on: ubuntu-latest
+   steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .Net
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore
+      run: dotnet restore ../MassTransit-Demo.sln
+
+    - name: Build
+      run: dotnet build ../MassTransit-Demo.sln --no-restore --configuration Release
+
+    - name: Publish
+      run: dotnet publish ../MassTransit-Demo.sln  --configuration Releasse -o '{{ PUBLISH_APP_PATH }}'
