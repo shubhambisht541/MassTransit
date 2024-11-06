@@ -28,4 +28,4 @@ jobs:
       run: dotnet build '${{ env.SOLUTION_FILE_PATH }}' --no-restore --configuration Release
 
     - name: Publish
-      run: dotnet publish '{{ env.SOLUTION_FILE_PATH }}'  --configuration Release -o '${{ env.PUBLISH_APP_PATH }}'
+      run: dotnet publish '${{ env.SOLUTION_FILE_PATH }}'  --configuration Release -o '${{ env.PUBLISH_APP_PATH }}'
