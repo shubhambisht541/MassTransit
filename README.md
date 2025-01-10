@@ -66,7 +66,7 @@ MassTransit-Demo/
 
 ## Prerequisites
 
-- .NET SDK 7.0 or later
+- .NET SDK 8.0 or later
 - Docker
 - Amazon SQS
 
